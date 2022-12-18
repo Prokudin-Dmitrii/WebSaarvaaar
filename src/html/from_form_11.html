@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Background image -->
+<div
+  class="bg-image d-flex justify-content-center align-items-center"
+  style="
+    background-image: url(https://proactions.ru/media/uploads/2017/05/06/61fjf6yh.jpg);
+    background-position: center;
+    background-size: cover;
+    height: 100vh;
+  "
+><div class="container d-flex justify-content-center align-items-center">
+    {{ wtf.quick_form(form) }}
+</div> </div>
+
+<!-- Background image -->
+{% endblock %}
