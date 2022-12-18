@@ -42,23 +42,23 @@ class RandomForestMSE:
         self.train_iter_results = []
         self.val_iter_results = []
         train_pred = np.zeros(X.shape[0])
-        if X_val is not None and y_val is not None:
+        if not (X_val is None) and not(y_val is None):
             val_pred = np.zeros(X_val.shape[0])
         if not self.r_state is None:
             np.random.seed(self.r_state)
         if self.fss is None:
-            self.ffs = X.shape[1] // 3
+            self.fss = X.shape[1] // 3
         self.forest = []
         self.forest_feat = []
         for i in range(self.n):
-            feat = np.random.permutation(X.shape[1])[:self.ffs]
+            feat = np.random.permutation(X.shape[1])[:self.fss]
             objs = np.random.randint(0, X.shape[0], X.shape[0])
             tree = DecisionTreeRegressor(criterion='squared_error', max_depth=self.max_depth, **self.trees_params)
             tree.fit(X[:, feat][objs], y[objs])
             self.forest.append(tree)
             self.forest_feat.append(feat)
 
-            if X_val is not None and y_val is not None:
+            if not (X_val is None) and not(y_val is None):
                 train_pred += self.forest[i].predict(X[:, self.forest_feat[i]])
                 val_pred += self.forest[i].predict(X_val[:, self.forest_feat[i]])
                 self.train_iter_results.append(mean_squared_error(y, train_pred/(i + 1)))
@@ -122,7 +122,7 @@ class GradientBoostingMSE:
         """
         self.train_iter_results = []
         self.val_iter_results = []
-        if X_val is not None and y_val is not None:
+        if not (X_val is None) and not(y_val is None):
             val_pred = np.zeros(X_val.shape[0])
         if not self.r_state is None:
             np.random.seed(self.r_state)
@@ -146,7 +146,7 @@ class GradientBoostingMSE:
 
             self.train_iter_results.append(mean_squared_error(y, init_f))
 
-            if X_val is not None and y_val is not None:
+            if not (X_val is None) and not(y_val is None):
                 val_pred += self.alphas[i] * self.forest[i].predict(X_val[:, self.forest_feat[i]])
                 self.val_iter_results.append(mean_squared_error(y_val, val_pred))
 
