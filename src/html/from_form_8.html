@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Background image -->
+<div
+  class="bg-image d-flex justify-content-center align-items-center"
+  style="
+    background-image: url(https://kartinkin.net/uploads/posts/2022-02/1646066313_44-kartinkin-net-p-alesha-popovich-kartinki-48.png);
+    background-position: center;
+    background-size: cover;
+    height: 100vh;
+  "
+><div class="container d-flex justify-content-center align-items-center">
+    {{ wtf.quick_form(form) }}
+</div> </div>
+
+<!-- Background image -->
+{% endblock %}
