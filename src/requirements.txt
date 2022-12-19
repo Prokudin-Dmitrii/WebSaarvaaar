@@ -4,7 +4,6 @@ scikit-learn
 plotly
 shapely
 pandas
-json
 
 wtforms
 flask_wtf
