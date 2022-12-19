@@ -23,6 +23,7 @@ Bootstrap(app)
 messages = []
 upload_folder = './uploads'
 app.config['UPLOAD_FOLDER'] = upload_folder
+os.makedirs(upload_folder, exist_ok=True)
 
 rf_model = pickle.load(open(os.path.join('./artifacts/', "RF.pkl"), "rb"))
 gb_model = pickle.load(open(os.path.join('./artifacts/', "GB.pkl"), "rb"))
