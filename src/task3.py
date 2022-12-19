@@ -21,6 +21,8 @@ app.config['SECRET_KEY'] = 'hello'
 Bootstrap(app)
 
 messages = []
+upload_folder = './uploads'
+app.config['UPLOAD_FOLDER'] = upload_folder
 
 rf_model = pickle.load(open(os.path.join('./artifacts/', "RF.pkl"), "rb"))
 gb_model = pickle.load(open(os.path.join('./artifacts/', "GB.pkl"), "rb"))
@@ -188,16 +190,20 @@ def rf_train():
                 fss = None
 
             target = train_form.target.data
-            train_filename = secure_filename(train_form.train_data.data.filename)
+            #train_filename = secure_filename(train_form.train_data.data.filename)
+            train_filename = train_form.train_data.data.filename
+            train_form.train_data.data.save(os.path.join(app.config['UPLOAD_FOLDER'], train_filename))
             try:
                 val_filename = train_form.val_data.data
-                val_filename = secure_filename(train_form.val_data.data.filename)
+                #val_filename = secure_filename(train_form.val_data.data.filename)
+                val_filename = train_form.val_data.data.filename
+                train_form.val_data.data.save(os.path.join(app.config['UPLOAD_FOLDER'], val_filename))
             except:
                 val_filename = None
             if val_filename == '':
                 val_filename = None
             try:
-                X = pd.read_csv(train_filename)
+                X = pd.read_csv(os.path.join(app.config['UPLOAD_FOLDER'], train_filename))
                 y = np.array(X[target])
                 X = X.drop([target], axis=1)
                 X = np.array(X)
@@ -206,7 +212,7 @@ def rf_train():
                 y_val = None
 
                 if not(val_filename is None):
-                    X_val = pd.read_csv(val_filename)
+                    X_val = pd.read_csv(os.path.join(app.config['UPLOAD_FOLDER'], val_filename))
                     y_val = np.array(X_val[target])
                     X_val = X_val.drop([target], axis=1)
                     X_val = np.array(X_val)
@@ -282,16 +288,20 @@ def gb_train():
                 fss = None
 
             target = train_form.target.data
-            train_filename = secure_filename(train_form.train_data.data.filename)
+            #train_filename = secure_filename(train_form.train_data.data.filename)
+            train_filename = train_form.train_data.data.filename
+            train_form.train_data.data.save(os.path.join(app.config['UPLOAD_FOLDER'], train_filename))
             try:
                 val_filename = train_form.val_data.data
-                val_filename = secure_filename(train_form.val_data.data.filename)
+                #val_filename = secure_filename(train_form.val_data.data.filename)
+                val_filename = train_form.val_data.data.filename
+                train_form.val_data.data.save(os.path.join(app.config['UPLOAD_FOLDER'], val_filename))
             except:
                 val_filename = None
             if val_filename == '':
                 val_filename = None
             try:
-                X = pd.read_csv(train_filename)
+                X = pd.read_csv(os.path.join(app.config['UPLOAD_FOLDER'], train_filename))
                 y = np.array(X[target])
                 X = X.drop([target], axis=1)
                 X = np.array(X)
@@ -300,7 +310,7 @@ def gb_train():
                 y_val = None
 
                 if not(val_filename is None):
-                    X_val = pd.read_csv(val_filename)
+                    X_val = pd.read_csv(os.path.join(app.config['UPLOAD_FOLDER'], val_filename))
                     y_val = np.array(X_val[target])
                     X_val = X_val.drop([target], axis=1)
                     X_val = np.array(X_val)
@@ -373,7 +383,9 @@ def rf_predictions():
         submitter = Inference()
 
         if submitter.validate_on_submit():
-            filename = secure_filename(submitter.inference_data.data.filename)
+            #filename = secure_filename(submitter.inference_data.data.filename)
+            filename = submitter.inference_data.data.filename
+            submitter.inference_data.data.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('rf_result', filename=filename))
 
         return render_template('from_form_10.html', form=submitter)
@@ -387,7 +399,7 @@ def rf_result():
         submitter = Result()
         datafile = request.args.get('filename')
         try:
-            data = pd.read_csv(datafile)
+            data = pd.read_csv(os.path.join(app.config['UPLOAD_FOLDER'], datafile))
             data = np.array(data)
             prediction = list(rf_model.predict(data))
             prediction = json.dumps(prediction)
@@ -411,7 +423,9 @@ def gb_predictions():
         submitter = Inference()
 
         if submitter.validate_on_submit():
-            filename = secure_filename(submitter.inference_data.data.filename)
+            #filename = secure_filename(submitter.inference_data.data.filename)
+            filename = submitter.inference_data.data.filename
+            submitter.inference_data.data.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return redirect(url_for('gb_result', filename=filename))
 
         return render_template('from_form_10.html', form=submitter)
@@ -425,7 +439,7 @@ def gb_result():
         submitter = Result()
         datafile = request.args.get('filename')
         try:
-            data = pd.read_csv(datafile)
+            data = pd.read_csv(os.path.join(app.config['UPLOAD_FOLDER'], datafile))
             data = np.array(data)
             prediction = list(gb_model.predict(data))
             prediction = json.dumps(prediction)
